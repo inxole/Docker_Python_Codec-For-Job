@@ -5,4 +5,6 @@ services:
       context: .
       dockerfile: ./Dockerfile
     tty: true
+    volumes:
+      - .:/app
     entrypoint: ["/bin/bash"]
