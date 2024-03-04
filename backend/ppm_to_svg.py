@@ -17,4 +17,3 @@ for filename in os.listdir(input_dir):
         subprocess.run(command, shell=True)
 
 print("変換が完了しました。")
-

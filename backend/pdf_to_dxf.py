@@ -3,7 +3,7 @@ import subprocess
 import argparse
 from pdf_to_svg import pdf_to_svg
 
-inkscape_path = "/Program Files/Inkscape/bin/inkscape.com"
+inkscape_path = "/usr/bin/inkscape"
 
 
 def convert_svg_to_dxf(svg_file, dxf_file):

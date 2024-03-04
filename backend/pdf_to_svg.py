@@ -1,29 +1,46 @@
-import fitz  # PyMuPDF
+import fitz
+import subprocess
 import os
+import shutil
 
 input_folder = "input"
 output_folder = "output"
 
-
 def pdf_to_svg(input_folder, output_folder):
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-
+    # 一時的にPPMファイルを保存するフォルダを作成
+    temp_folder = os.path.join(output_folder, "temp_ppm")
+    os.makedirs(temp_folder, exist_ok=True)
+    
+    # 入力フォルダ内の全てのPDFファイルを検索
     for filename in os.listdir(input_folder):
         if filename.endswith(".pdf"):
             input_path = os.path.join(input_folder, filename)
             doc = fitz.open(input_path)
 
+            # PDFの各ページに対して処理
             for page_num in range(len(doc)):
                 page = doc.load_page(page_num)
-                svg = page.get_svg_image()
-                output_path = os.path.join(
-                    output_folder,
-                    f"{os.path.splitext(filename)[0]}_page_{page_num}.svg",
-                )
-                with open(output_path, "w") as svg_file:
-                    svg_file.write(svg)
+                pix = page.get_pixmap()
 
-            print(f"{filename} was successfully converted to SVG.")
+                # 一時フォルダ内にPPMファイルを保存
+                temp_output_path = os.path.join(temp_folder, f"{filename[:-4]}_page{page_num + 1}.ppm")
+                pix.save(temp_output_path)
+
             doc.close()
 
+    # 一時フォルダ内の全てのPPMファイルをSVGに変換
+    for filename in os.listdir(temp_folder):
+        if filename.endswith(".ppm"):
+            input_path = os.path.join(temp_folder, filename)
+            output_path = os.path.join(output_folder, filename.replace('.ppm', '.svg'))
+
+            # Potraceコマンドを構築
+            command = f"potrace {input_path} -s -o {output_path}"
+
+            # コマンドを実行
+            subprocess.run(command, shell=True)
+
+    # 一時フォルダを削除
+    shutil.rmtree(temp_folder)
+
+    print("PDFからSVGへの変換が完了しました。")
