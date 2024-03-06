@@ -42,5 +42,3 @@ def pdf_to_svg(input_folder, output_folder):
 
     # 一時フォルダを削除
     shutil.rmtree(temp_folder)
-
-    # print("PDFからSVGへの変換が完了しました。")

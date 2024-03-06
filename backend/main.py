@@ -1,9 +1,10 @@
+import os
 import subprocess
 from fastapi import FastAPI, File, UploadFile, Form
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
-import os
 from zipfile import ZipFile
+from clear_files import clear_directory
 
 
 app = FastAPI()
@@ -18,6 +19,11 @@ class Item(BaseModel):
 
 @app.post("/upload-pdf/")
 async def upload_pdf(pdf_file: UploadFile = File(...), pages: int = Form(...)):
+
+    # 既存のファイルを削除
+    clear_directory("uploads")
+    clear_directory("output_folder")
+
     UPLOAD_DIR = "uploads"
     file_path = os.path.join(UPLOAD_DIR, pdf_file.filename)
 

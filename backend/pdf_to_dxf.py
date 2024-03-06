@@ -10,7 +10,7 @@ def convert_svg_to_dxf(svg_file, dxf_file):
     subprocess.run(
         [inkscape_path, svg_file, "--export-type=dxf", "-o", dxf_file], check=True
     )
-    print("SVGをDXFへ変換しました。")
+    print("PDFをDXFへ変換しました。")
 
 def extract_and_convert(pdf_file, output_dir):
     if not os.path.exists(output_dir):
