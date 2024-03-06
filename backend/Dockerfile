@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir \
   PyPDF2 \
   argparse \
   PyMuPDF \
+  python-multipart \
   && rm -rf /root/.cache
 
 EXPOSE 8000 
