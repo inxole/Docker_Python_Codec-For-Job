@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
   vim \
   inkscape \
   potrace \
+  libgl1 \
   && rm -rf /var/lib/apt/lists/*
 
 # Install python package
@@ -15,6 +16,9 @@ RUN pip install --no-cache-dir \
   argparse \
   PyMuPDF \
   python-multipart \
+  opencv-python \
+  svgwrite \
+  matplotlib \
+  pandas \
+  openpyxl \
   && rm -rf /root/.cache
-
-EXPOSE 8000 
