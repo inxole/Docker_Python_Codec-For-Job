@@ -5,11 +5,27 @@ import subprocess
 from zipfile import ZipFile
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from clear_files import clear_directory
 
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173/",
+    "http://localhost:8000/",
+]
+
+# CORSの設定
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # 数値やその他のデータを受け取るためのPydanticモデル
 class Item(BaseModel):
@@ -47,7 +63,7 @@ async def download_dxf_zip():
 
     # ZIPファイルを作成
     with ZipFile(zip_file_path, "w") as zipf:
-        for root, files in os.walk(output_folder):
+        for root, _, files in os.walk(output_folder):
             for file in files:
                 if file.endswith(".dxf"):
                     # .dxfファイルのみをZIPに追加
