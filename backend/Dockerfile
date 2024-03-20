@@ -21,4 +21,6 @@ RUN pip install --no-cache-dir \
   matplotlib \
   pandas \
   openpyxl \
+  opencv-python \
+  opencv-contrib-python \
   && rm -rf /root/.cache
