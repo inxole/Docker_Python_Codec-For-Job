@@ -1,34 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react'
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const [file, setFile] = useState<File | null>(null)
+  const [pages, setPages] = useState<number>(1)
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setFile(event.target.files[0])
+    }
+  }
+
+  const handlePagesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPages(parseInt(event.target.value))
+  }
+
+  const uploadFile = () => {
+    if (!file) {
+      alert('Please select a file')
+      return
+    }
+
+    const formData = new FormData();
+    formData.append('pdf_file', file)
+    formData.append('pages', pages.toString())
+
+    fetch('http://localhost:8000/upload-pdf/', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data)
+      })
+      .catch(error => {
+        console.error('Error:', error)
+      })
+  }
+
+  const downloadFile = () => {
+    fetch('http://localhost:8000/download_dxf.zip/', {
+      method: 'GET',
+    })
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'dxf_files.zip'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      })
+      .catch(error => {
+        console.error('Error:', error)
+      });
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <h1>PDF to DXF Converter</h1>
+      <input type="file" onChange={handleFileChange} />
+      <input type="number" value={pages} onChange={handlePagesChange} />
+      <button onClick={uploadFile}>Upload PDF</button>
+      <button onClick={downloadFile}>Download DXF</button>
+      <a href='http://localhost:8000/download-dxf-zip/' target='_blank' rel='noopener noreferrer'>link</a>
+    </div>
   )
 }
 
