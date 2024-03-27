@@ -2,12 +2,14 @@
 
 import os
 import subprocess
+import uuid
 from zipfile import ZipFile
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from clear_files import clear_directory
+from pdf_to_dxf import extract_and_convert
 
 
 app = FastAPI()
@@ -35,24 +37,27 @@ class Item(BaseModel):
 
 
 @app.post("/upload-pdf/")
-async def upload_pdf(pdf_file: UploadFile = File(...), pages: int = Form(...)):
+async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: int = Form(...)):
     """uvicorn uploads post"""
     # 既存のファイルを削除
     clear_directory("uploads")
     clear_directory("output_folder")
 
     upload_dir = "uploads"
-    file_path = os.path.join(upload_dir, pdf_file.filename)
+    files_id = uuid.uuid4()
+    file_save_path = os.path.join(upload_dir, str(files_id) + ".pdf")
 
-    with open(file_path, "wb") as f:
-        f.write(await pdf_file.read())
+    with open(file_save_path, "wb") as file_writer:
+        file_writer.write(await upload_pdf_file.read())
 
     # コマンドラインツールを呼び出す
-    cmd = ["python", "pdf_to_dxf.py", upload_dir, "output_folder", "-p", str(pages)]
-    subprocess.run(cmd, check=True)  # エラーチェックを有効にする
+    # cmd = ["python", "pdf_to_dxf.py", upload_dir, "output_folder", "-p", str(pages)]
+    # subprocess.run(cmd, check=True)  # エラーチェックを有効にする
+    output = "output_folder"
+    extract_and_convert(upload_dir, output)
 
     # ダウンロード用エンドポイントにリダイレクト
-    return {"message": "PDF uploaded and converted successfully", "number": pages}
+    return {"message": files_id, "number": pages}
 
 
 @app.get("/download-dxf-zip/")
