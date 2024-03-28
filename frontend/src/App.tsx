@@ -32,7 +32,7 @@ const App = () => {
     }
 
     const formData = new FormData();
-    formData.append('pdf_file', file)
+    formData.append('upload_pdf_file', file)
     // ページ範囲をフォームデータに追加します
     formData.append('pages', pageRange)
 
