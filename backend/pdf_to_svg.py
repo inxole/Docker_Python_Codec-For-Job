@@ -25,7 +25,7 @@ def pdf_to_svg(input_folder, output_folder):
 
                 # 一時フォルダ内にPPMファイルを保存
                 temp_output_path = os.path.join(
-                    temp_folder, f"{filename[:-4]}_page{page_num + 1}.ppm"
+                    temp_folder, f"{filename[:-4]}_{page_num + 1}.ppm"
                 )
                 pix.save(temp_output_path)
 

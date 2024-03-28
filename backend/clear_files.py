@@ -1,8 +1,11 @@
+"""Delete last session"""
+
 import os
 import shutil
 
 
 def clear_directory(directory: str):
+    """clear all files in derectory"""
     for filename in os.listdir(directory):
         file_path = os.path.join(directory, filename)
         try:
@@ -10,6 +13,5 @@ def clear_directory(directory: str):
                 os.unlink(file_path)
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
-        except Exception as e:
-            print(f'Failed to delete {file_path}. Reason: {e}')
-
+        except OSError as e:
+            print(f"Failed to delete {file_path}. Reason: {e}")
