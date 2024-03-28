@@ -18,7 +18,7 @@ const App = () => {
   }
 
   // ファイルアップロードの機能を更新します
-  async function uploadFile() {
+  const uploadFile = () => {
     if (!file) {
       alert('ファイルを選択してください')
       return
@@ -36,14 +36,9 @@ const App = () => {
     // ページ範囲をフォームデータに追加します
     formData.append('pages', pageRange)
 
-    await fetch('http://localhost:8000/upload-pdf/', {
+    fetch('http://localhost:8000/upload-pdf/', {
       method: 'POST',
-      mode: "cors",
       body: formData,
-      headers: {
-        // 'Content-Type': 'multipart/form-data',
-        'accept': 'multipart/form-data',
-      },
     })
       .then(response => response.json())
       .then(data => {
@@ -52,7 +47,6 @@ const App = () => {
       .catch(error => {
         console.error('Error:', error)
       })
-    console.log(file)
   }
 
   return (
