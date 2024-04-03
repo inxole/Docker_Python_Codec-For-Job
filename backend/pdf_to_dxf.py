@@ -1,22 +1,23 @@
 """converter pdf files to dxf files"""
 
+import asyncio
 import os
-import subprocess
 import argparse
 from pdf_to_svg import pdf_to_svg
 
 INKSCAPE_DIR = "/usr/bin/inkscape"
 
 
-def convert_svg_to_dxf(svg_file, dxf_file):
+async def convert_svg_to_dxf(svg_file, dxf_file):
     """converter svg files to dxf files on inkscape"""
-    subprocess.run(
-        [INKSCAPE_DIR, svg_file, "--export-type=dxf", "-o", dxf_file], check=True
+    process = await asyncio.create_subprocess_exec(
+        INKSCAPE_DIR, svg_file, "--export-type=dxf", "-o", dxf_file
     )
-    print("PDFをDXFへ変換しました。")
+    await process.wait()  # プロセスの終了を待つ
+    print("SVGをDXFへ変換しました。")
 
 
-def extract_and_convert(pdf_file, output_dir):
+async def extract_and_convert(pdf_file, output_dir):
     """pdf files throw pdf_to_svg"""
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -30,7 +31,7 @@ def extract_and_convert(pdf_file, output_dir):
         dxf_file_name = f"{os.path.splitext(svg_file_name)[0]}.dxf"
         dxf_file_path = os.path.join(output_dir, dxf_file_name)
 
-        convert_svg_to_dxf(svg_file_path, dxf_file_path)
+        await convert_svg_to_dxf(svg_file_path, dxf_file_path)
 
 
 def parse_pages_arg(pages_arg):
