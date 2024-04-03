@@ -7,7 +7,6 @@ from fastapi import FastAPI, File, HTTPException, UploadFile, Form, status
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from clear_files import clear_directory
 from pdf_to_dxf import extract_and_convert
 
 
@@ -29,27 +28,27 @@ app.add_middleware(
 
 
 class Item(BaseModel):
-    """pydantic model add pages"""
+    """Pydantic model add pages"""
 
     pages: int
 
 
 class Toggle:
-    """test"""
+    """Change state Toggle"""
 
     def __init__(self):
         self.state = True
 
     def releace(self):
-        """test"""
+        """No catch pdf files"""
         self.state = True
 
     def catch(self):
-        """test"""
+        """Catch pdf files"""
         self.state = False
 
     def not_using(self):
-        """test"""
+        """Get state"""
         return self.state
 
 
@@ -63,10 +62,6 @@ async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: int = Form(
     if toggle_instance.not_using():
 
         toggle_instance.catch()
-
-        # 既存のファイルを削除
-        clear_directory("uploads")
-        clear_directory("output_folder")
 
         upload_dir = "uploads"
         files_id = uuid.uuid4()
@@ -85,18 +80,17 @@ async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: int = Form(
     raise HTTPException(status_code=status.HTTP_423_LOCKED, detail="anyone using")
 
 
-@app.get("/download-dxf-zip/")
-async def download_dxf_zip():
+@app.get("/download-dxf-zip/{file_uuid}")
+async def download_dxf_zip(file_uuid):
     """get downloads zip files"""
     output_folder = "output_folder"
-    zip_file_path = "output_folder/dxf_files.zip"
+    zip_file_path = "output_folder/" + file_uuid + ".zip"
 
     # ZIPファイルを作成
     with ZipFile(zip_file_path, "w") as zipf:
         for root, _, files in os.walk(output_folder):
             for file in files:
-                if file.endswith(".dxf"):
-                    # .dxfファイルのみをZIPに追加
+                if file.endswith(".dxf") & file.startswith(file_uuid):
                     zipf.write(os.path.join(root, file), arcname=file)
 
     # ZIPファイルをレスポンスとして返す

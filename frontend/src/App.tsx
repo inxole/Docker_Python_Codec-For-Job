@@ -5,6 +5,7 @@ const App = () => {
   const [file, setFile] = useState<File | null>()
   // ページ範囲を管理するための状態を追加します
   const [pageRange, setPageRange] = useState('')
+  const [uuid_number, setUuid_Number] = useState("")
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -40,7 +41,14 @@ const App = () => {
       method: 'POST',
       body: formData,
     })
+
+
     if (response.status == 200) {
+      const responce_data = await response.json()
+      if (responce_data === null) {
+        throw new Error('Some processing failed.')
+      }
+      setUuid_Number(responce_data.message)
       alert('変換が完了しました。')
     } else if (response.status == 423) {
       alert('他の人が利用中です。')
@@ -63,7 +71,7 @@ const App = () => {
         />
       </div>
       <button className="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-700 transition duration-200 ease-in-out" onClick={uploadFile}>変換</button>
-      <a href='http://localhost:8000/download-dxf-zip/' target='_blank' rel='noopener noreferrer'>
+      <a href={`http://localhost:8000/download-dxf-zip/${uuid_number}`} target='_blank' rel='noopener noreferrer'>
         <button className="px-4 py-2 bg-green-500 text-white rounded shadow hover:bg-green-700 transition duration-200 ease-in-out">ダウンロード</button>
       </a>
     </div>
