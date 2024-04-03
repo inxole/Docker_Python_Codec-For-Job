@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import './App.css'
 
 const App = () => {
-  const [file, setFile] = useState<File | null>(null)
+  const [file, setFile] = useState<File | null>()
   // ページ範囲を管理するための状態を追加します
-  const [pageRange, setPageRange] = useState<string>('')
+  const [pageRange, setPageRange] = useState('')
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -18,7 +18,7 @@ const App = () => {
   }
 
   // ファイルアップロードの機能を更新します
-  const uploadFile = () => {
+  const uploadFile = async () => {
     if (!file) {
       alert('ファイルを選択してください')
       return
@@ -36,17 +36,15 @@ const App = () => {
     // ページ範囲をフォームデータに追加します
     formData.append('pages', pageRange)
 
-    fetch('http://localhost:8000/upload-pdf/', {
+    const response = await fetch('http://localhost:8000/upload-pdf/', {
       method: 'POST',
       body: formData,
     })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Success:', data)
-      })
-      .catch(error => {
-        console.error('Error:', error)
-      })
+    if (response.status == 200) {
+      alert('変換が完了しました。')
+    } else if (response.status == 423) {
+      alert('他の人が利用中です。')
+    }
   }
 
   return (

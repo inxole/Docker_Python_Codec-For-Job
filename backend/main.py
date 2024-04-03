@@ -82,7 +82,7 @@ async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: int = Form(
 
         return {"message": files_id, "number": pages}
 
-    raise HTTPException(status_code=status.HTTP_102_PROCESSING, detail="anyone using")
+    raise HTTPException(status_code=status.HTTP_423_LOCKED, detail="anyone using")
 
 
 @app.get("/download-dxf-zip/")
