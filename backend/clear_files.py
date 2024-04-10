@@ -1,11 +1,11 @@
 """Delete last session"""
 
-import os
 import shutil
+import os
 
 
-def clear_directory(directory: str):
-    """clear all files in derectory"""
+def delete_files_in_directory(directory):
+    """test"""
     for filename in os.listdir(directory):
         file_path = os.path.join(directory, filename)
         try:
@@ -15,3 +15,15 @@ def clear_directory(directory: str):
                 shutil.rmtree(file_path)
         except OSError as e:
             print(f"Failed to delete {file_path}. Reason: {e}")
+
+
+def scheduled_deletion():
+    """test"""
+    directory_to_clean_1 = "uploads"
+    delete_files_in_directory(directory_to_clean_1)
+    directory_to_clean_2 = "output_folder"
+    delete_files_in_directory(directory_to_clean_2)
+
+
+if __name__ == "__main__":
+    scheduled_deletion()

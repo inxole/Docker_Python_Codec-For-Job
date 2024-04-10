@@ -22,3 +22,5 @@ RUN pip install --no-cache-dir \
   pandas \
   openpyxl \
   && rm -rf /root/.cache
+
+WORKDIR /app
