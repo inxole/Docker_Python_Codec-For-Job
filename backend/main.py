@@ -56,7 +56,7 @@ toggle_instance = Toggle()
 
 
 @app.post("/upload-pdf/")
-async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: int = Form(...)):
+async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: str = Form(...)):
     """uvicorn uploads post"""
 
     if toggle_instance.not_using():
@@ -71,7 +71,7 @@ async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: int = Form(
             file_writer.write(await upload_pdf_file.read())
 
         output = "output_folder"
-        await extract_and_convert(upload_dir, output)
+        await extract_and_convert(upload_dir, output, pages)
 
         toggle_instance.releace()
 

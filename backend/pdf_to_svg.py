@@ -6,7 +6,7 @@ import shutil
 import fitz
 
 
-def pdf_to_svg(input_folder, output_folder):
+def pdf_to_svg(input_folder, output_folder, pages):
     """converter pdf files to svg files function"""
     # 一時的にPPMファイルを保存するフォルダを作成
     temp_folder = os.path.join(output_folder, "temp_ppm")
@@ -18,14 +18,14 @@ def pdf_to_svg(input_folder, output_folder):
             input_path = os.path.join(input_folder, filename)
             doc = fitz.open(input_path)
 
-            # PDFの各ページに対して処理
-            for page_num in range(len(doc)):
-                page = doc.load_page(page_num)
+            # PDFの指定されたページに対して処理
+            for page_num in pages:
+                page = doc.load_page(page_num - 1)  # ページ番号を0-indexedに変換
                 pix = page.get_pixmap()
 
                 # 一時フォルダ内にPPMファイルを保存
                 temp_output_path = os.path.join(
-                    temp_folder, f"{filename[:-4]}_{page_num + 1}.ppm"
+                    temp_folder, f"{filename[:-4]}_{page_num}.ppm"
                 )
                 pix.save(temp_output_path)
 
