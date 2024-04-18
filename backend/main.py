@@ -1,12 +1,15 @@
 """pdf to dxf converter script"""
 
 import os
+from shutil import copyfileobj
+from typing import List
 import uuid
 from zipfile import ZipFile
 from fastapi import FastAPI, File, HTTPException, UploadFile, Form, status
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from converter_files import converter_files, pdf_capacity_converter
 from pdf_to_dxf import extract_and_convert
 
 
@@ -95,3 +98,45 @@ async def download_dxf_zip(file_uuid):
 
     # ZIPファイルをレスポンスとして返す
     return FileResponse(path=zip_file_path, filename="dxf_files.zip")
+
+
+@app.post("/upload_jpg_or_png/")
+async def converter_jpg_png_files(
+    files: List[UploadFile] = File(...), quality_number: str = Form(...)
+):
+    """jpg and png compression function"""
+    file_paths = []
+    for file in files:
+        file_path = f"converter_upload/{file.filename}"
+        with open(file_path, "wb") as buffer:
+            copyfileobj(file.file, buffer)
+        file_paths.append(file_path)
+
+    converter_files(
+        get_files="converter_upload",
+        output_files="converter_output",
+        quality_number=quality_number,
+    )
+
+    return {"file_names": [file.filename for file in files], "number": quality_number}
+
+
+@app.post("/pdf_for_compression/")
+async def converter_pdf(
+    upload_pdf_for_converter: UploadFile = File(...), zoom_number: str = Form(...)
+):
+    """pdf compression functions"""
+    input_path = f"converter_upload/{upload_pdf_for_converter.filename}"
+    with open(input_path, "wb") as buffer:
+        copyfileobj(upload_pdf_for_converter.file, buffer)
+
+    pdf_capacity_converter(
+        input_folder="converter_upload",
+        output_folder="converter_output",
+        compression_level=zoom_number,
+    )
+
+    return {
+        "message": f"Processed {upload_pdf_for_converter.filename}",
+        "number": zoom_number,
+    }

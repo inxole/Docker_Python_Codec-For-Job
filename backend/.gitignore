@@ -5,3 +5,5 @@ output
 .venv
 uploads
 output_folder
+converter_upload
+converter_output
