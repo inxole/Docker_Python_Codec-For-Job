@@ -2,6 +2,7 @@
 
 import asyncio
 import os
+import zipfile
 from pdf_to_svg import pdf_to_svg
 
 INKSCAPE_DIR = "/usr/bin/inkscape"
@@ -34,20 +35,33 @@ async def convert_svg_to_dxf(svg_file, dxf_file):
     print("SVGをDXFへ変換しました。")
 
 
-async def extract_and_convert(pdf_file, output_dir, pages):
-    """pdf files throw pdf_to_svg"""
+async def extract_and_convert(pdf_file, output_dir, pages, uuid_name):
+    """Convert PDF files to SVG and then to DXF."""
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     specified_page = parse_pages_arg(pages)
-
     pdf_to_svg(pdf_file, output_dir, specified_page)
 
     svg_files = [f for f in os.listdir(output_dir) if f.endswith(".svg")]
 
     for svg_file_name in svg_files:
         svg_file_path = os.path.join(output_dir, svg_file_name)
-        dxf_file_name = f"{os.path.splitext(svg_file_name)[0]}.dxf"
+        dxf_file_name = f"{uuid_name}_{os.path.splitext(svg_file_name)[0]}.dxf"
         dxf_file_path = os.path.join(output_dir, dxf_file_name)
-
         await convert_svg_to_dxf(svg_file_path, dxf_file_path)
+        os.remove(svg_file_path)
+
+    # ZIPファイルの作成
+    zip_file_path = os.path.join(output_dir, f"{uuid_name}.zip")
+    with zipfile.ZipFile(zip_file_path, "w") as zipf:
+        dxf_files = [
+            f
+            for f in os.listdir(output_dir)
+            if f.startswith(str(uuid_name)) and f.endswith(".dxf")
+        ]
+        for dxf_file in dxf_files:
+            dxf_file_path = os.path.join(output_dir, dxf_file)
+            arcname = dxf_file[len(str(uuid_name)) + 1 :]
+            zipf.write(dxf_file_path, arcname=arcname)
+            os.remove(dxf_file_path)

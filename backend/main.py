@@ -68,13 +68,13 @@ async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: str = Form(
 
         upload_dir = "uploads"
         files_id = uuid.uuid4()
-        file_save_path = os.path.join(upload_dir, str(files_id) + ".pdf")
+        file_save_path = os.path.join(upload_dir, upload_pdf_file.filename)
 
         with open(file_save_path, "wb") as file_writer:
             file_writer.write(await upload_pdf_file.read())
 
         output = "output_folder"
-        await extract_and_convert(upload_dir, output, pages)
+        await extract_and_convert(upload_dir, output, pages, files_id)
 
         toggle_instance.releace()
 
@@ -85,16 +85,16 @@ async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: str = Form(
 
 @app.get("/download-dxf-zip/{file_uuid}")
 async def download_dxf_zip(file_uuid):
-    """get downloads zip files"""
-    output_folder = "output_folder"
+    """get download zip files"""
+    # output_folder = "output_folder"
     zip_file_path = "output_folder/" + file_uuid + ".zip"
 
     # ZIPファイルを作成
-    with ZipFile(zip_file_path, "w") as zipf:
-        for root, _, files in os.walk(output_folder):
-            for file in files:
-                if file.endswith(".dxf") & file.startswith(file_uuid):
-                    zipf.write(os.path.join(root, file), arcname=file)
+    # with ZipFile(zip_file_path, "w") as zipf:
+    #     for root, _, files in os.walk(output_folder):
+    #         for file in files:
+    #             if file.endswith(".dxf") & file.startswith(file_uuid):
+    #                 zipf.write(os.path.join(root, file), arcname=file)
 
     # ZIPファイルをレスポンスとして返す
     return FileResponse(path=zip_file_path, filename="dxf_files.zip")
@@ -121,6 +121,24 @@ async def converter_jpg_png_files(
     return {"file_names": [file.filename for file in files], "number": quality_number}
 
 
+@app.get("/download-jpg-and-png/{file_uuid}")
+async def download_jpg_and_png_zip(file_uuid):
+    """get download jpg and png in zip files"""
+    output_folder = "converter_output"
+    zip_file_path = "converter_output/" + file_uuid + ".zip"
+
+    with ZipFile(zip_file_path, "w") as zipf:
+        for root, _, files in os.walk(output_folder):
+            for file in files:
+                # .jpg または .png のファイルを対象にする
+                if (file.endswith(".jpg") or file.endswith(".png")) and file.startswith(
+                    file_uuid
+                ):
+                    zipf.write(os.path.join(root, file), arcname=file)
+
+    return FileResponse(path=zip_file_path, filename="dxf_files.zip")
+
+
 @app.post("/pdf_for_compression/")
 async def converter_pdf(
     upload_pdf_for_converter: UploadFile = File(...), zoom_number: str = Form(...)
@@ -140,3 +158,12 @@ async def converter_pdf(
         "message": f"Processed {upload_pdf_for_converter.filename}",
         "number": zoom_number,
     }
+
+
+@app.get("/download-pdf/{file_uuid}")
+async def download_pdf(file_uuid: str):
+    """PDFファイルをダウンロードする"""
+    output_folder = "converter_output"
+    pdf_file_path = f"{output_folder}/{file_uuid}.pdf"
+
+    return FileResponse(path=pdf_file_path, filename=f"{file_uuid}.pdf")
