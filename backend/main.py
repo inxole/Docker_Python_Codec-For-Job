@@ -4,7 +4,6 @@ import os
 from shutil import copyfileobj
 from typing import List
 import uuid
-from zipfile import ZipFile
 from fastapi import FastAPI, File, HTTPException, UploadFile, Form, status
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -86,17 +85,8 @@ async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: str = Form(
 @app.get("/download-dxf-zip/{file_uuid}")
 async def download_dxf_zip(file_uuid):
     """get download zip files"""
-    # output_folder = "output_folder"
     zip_file_path = "output_folder/" + file_uuid + ".zip"
 
-    # ZIPファイルを作成
-    # with ZipFile(zip_file_path, "w") as zipf:
-    #     for root, _, files in os.walk(output_folder):
-    #         for file in files:
-    #             if file.endswith(".dxf") & file.startswith(file_uuid):
-    #                 zipf.write(os.path.join(root, file), arcname=file)
-
-    # ZIPファイルをレスポンスとして返す
     return FileResponse(path=zip_file_path, filename="dxf_files.zip")
 
 
@@ -112,31 +102,23 @@ async def converter_jpg_png_files(
             copyfileobj(file.file, buffer)
         file_paths.append(file_path)
 
+    files_id = uuid.uuid4()
     converter_files(
         get_files="converter_upload",
         output_files="converter_output",
         quality_number=quality_number,
+        uuid_name=files_id,
     )
 
-    return {"file_names": [file.filename for file in files], "number": quality_number}
+    return {"file_names": files_id, "number": quality_number}
 
 
 @app.get("/download-jpg-and-png/{file_uuid}")
 async def download_jpg_and_png_zip(file_uuid):
     """get download jpg and png in zip files"""
-    output_folder = "converter_output"
     zip_file_path = "converter_output/" + file_uuid + ".zip"
 
-    with ZipFile(zip_file_path, "w") as zipf:
-        for root, _, files in os.walk(output_folder):
-            for file in files:
-                # .jpg または .png のファイルを対象にする
-                if (file.endswith(".jpg") or file.endswith(".png")) and file.startswith(
-                    file_uuid
-                ):
-                    zipf.write(os.path.join(root, file), arcname=file)
-
-    return FileResponse(path=zip_file_path, filename="dxf_files.zip")
+    return FileResponse(path=zip_file_path, filename="converter_files.zip")
 
 
 @app.post("/pdf_for_compression/")

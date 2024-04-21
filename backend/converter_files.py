@@ -2,24 +2,30 @@
 
 import os
 import shutil
+import zipfile
 from PIL import Image
 import fitz
 
 
-def converter_files(get_files, output_files, quality_number):
+def converter_files(get_files, output_files, quality_number, uuid_name):
     """pdf and png converter function"""
     # 出力フォルダが存在しない場合は作成
     if not os.path.exists(output_files):
         os.makedirs(output_files)
 
+    # 出力ファイル名のリストを初期化
+    converted_files = []
+
     # 入力フォルダ内の全ファイルに対して処理
     for image_file in os.listdir(get_files):
         # 画像ファイルのパスを組み立て
         file_path = os.path.join(get_files, image_file)
-        output_path = os.path.join(output_files, image_file)
+        # UUID名を追加した出力ファイル名
+        output_file_name = f"{uuid_name}_{image_file}"
+        output_path = os.path.join(output_files, output_file_name)
 
         # JPEGファイルの場合
-        if image_file.lower().endswith(".jpg"):
+        if image_file.lower().endswith((".jpg", ".jpeg")):
             with Image.open(file_path) as img:
                 jpg_quality = int(quality_number)
                 img.save(output_path, "JPEG", quality=jpg_quality)
@@ -29,6 +35,15 @@ def converter_files(get_files, output_files, quality_number):
             with Image.open(file_path) as img:
                 img = img.quantize(colors=256)
                 img.save(output_path, "PNG", optimize=True)
+        converted_files.append(output_path)
+
+    zip_path = os.path.join(output_files, f"{str(uuid_name)}.zip")
+    with zipfile.ZipFile(zip_path, "w") as zipf:
+        for file in converted_files:
+            zipf.write(
+                file, arcname=os.path.basename(file).replace(f"{uuid_name}_", "")
+            )
+            os.remove(file)
 
 
 def pdf_capacity_converter(input_folder, output_folder, compression_level):
