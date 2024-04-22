@@ -73,8 +73,28 @@ class ToggleJPGPNG:
         return self.state
 
 
+class TogglePDF:
+    """Change state Toggle"""
+
+    def __init__(self):
+        self.state = True
+
+    def releace(self):
+        """No catch pdf files"""
+        self.state = True
+
+    def catch(self):
+        """Catch pdf files"""
+        self.state = False
+
+    def not_using(self):
+        """Get state"""
+        return self.state
+
+
 toggleDXF_instance = ToggleTransDXF()
 toggleJPGPNG_instance = ToggleJPGPNG()
+togglePDF_instance = TogglePDF()
 
 
 @app.post("/upload-pdf/")
@@ -83,6 +103,7 @@ async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: str = Form(
 
     if toggleDXF_instance.not_using():
         toggleDXF_instance.catch()
+
         upload_dir = "uploads"
         files_id = uuid.uuid4()
         file_save_path = os.path.join(upload_dir, upload_pdf_file.filename)
@@ -114,7 +135,6 @@ async def converter_jpg_png_files(
 ):
     """jpg and png compression function"""
     if toggleJPGPNG_instance.not_using():
-
         toggleJPGPNG_instance.catch()
 
         file_paths = []
@@ -150,24 +170,30 @@ async def download_jpg_and_png_zip(file_uuid):
 @app.post("/pdf_for_compression/")
 async def converter_pdf(upload_pdf_for_converter: UploadFile = File(...)):
     """pdf compression functions"""
-    input_path = f"converter_upload/{upload_pdf_for_converter.filename}"
-    with open(input_path, "wb") as buffer:
-        copyfileobj(upload_pdf_for_converter.file, buffer)
+    if togglePDF_instance.not_using():
+        togglePDF_instance.catch()
 
-    files_id = uuid.uuid4()
-    pdf_capacity_converter(
-        input_folder="converter_upload",
-        output_folder="converter_output",
-        compression_level=1.5,
-        uuid_name=files_id,
-    )
+        input_path = f"converter_upload/{upload_pdf_for_converter.filename}"
+        with open(input_path, "wb") as buffer:
+            copyfileobj(upload_pdf_for_converter.file, buffer)
 
-    return {"message": "files_id"}
+        files_id = uuid.uuid4()
+        pdf_capacity_converter(
+            input_folder="converter_upload",
+            output_folder="converter_output",
+            compression_level=1.5,
+            uuid_name=files_id,
+        )
+
+        togglePDF_instance.releace()
+        return {"message": files_id}
+
+    raise HTTPException(status_code=status.HTTP_423_LOCKED, detail="anyone using")
 
 
 @app.get("/download-pdf/{file_uuid}")
-async def download_pdf(file_uuid: str):
-    """PDFファイルをダウンロードする"""
+async def download_pdf(file_uuid):
+    """get download pdf in zip files"""
     zip_file_path = "converter_output/" + file_uuid + ".zip"
 
     return FileResponse(path=zip_file_path, filename="converter_files.zip")

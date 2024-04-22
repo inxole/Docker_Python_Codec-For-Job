@@ -9,18 +9,18 @@ const Commpress_jpg_and_png = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      const fileList = Array.from(event.target.files);
+      const fileList = Array.from(event.target.files)
       const isValid = fileList.every(file =>
         file.name.endsWith('.jpg') || file.name.endsWith('.jpeg') || file.name.endsWith('.png')
-      );
+      )
 
       if (!isValid) {
-        alert('jpgまたはpngのファイルのみアップロード可能です。');
-        event.target.value = ''; // ファイル選択をリセット
-        return;
+        alert('jpgまたはpngのファイルのみアップロード可能です。')
+        event.target.value = '' // ファイル選択をリセット
+        return
       }
 
-      setFiles(fileList);
+      setFiles(fileList)
     }
   }
 
@@ -59,14 +59,12 @@ const Commpress_jpg_and_png = () => {
       alert('圧縮が完了しました。')
     } else if (responseData.status == 423) {
       alert(`ほかの人が使用中です。`)
-    } else if (responseData.status == 400) {
-      alert(`jpgまたはpng以外のファイルは圧縮できません。`)
     }
   }
 
   return (
     <div className="flex flex-col items-center justify-center pt-20 space-y-4" style={{ paddingTop: '200px' }}>
-      <h1 className="text-3xl font-bold underline">JPG and PNG Converter</h1>
+      <h1 className="text-3xl font-bold underline">JPG and PNG Compressor</h1>
       <input
         className="border-2 border-gray-300 p-2 rounded-md w-80"
         type="file"
