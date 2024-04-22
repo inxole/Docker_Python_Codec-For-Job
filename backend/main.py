@@ -148,30 +148,26 @@ async def download_jpg_and_png_zip(file_uuid):
 
 
 @app.post("/pdf_for_compression/")
-async def converter_pdf(
-    upload_pdf_for_converter: UploadFile = File(...), zoom_number: str = Form(...)
-):
+async def converter_pdf(upload_pdf_for_converter: UploadFile = File(...)):
     """pdf compression functions"""
     input_path = f"converter_upload/{upload_pdf_for_converter.filename}"
     with open(input_path, "wb") as buffer:
         copyfileobj(upload_pdf_for_converter.file, buffer)
 
+    files_id = uuid.uuid4()
     pdf_capacity_converter(
         input_folder="converter_upload",
         output_folder="converter_output",
-        compression_level=zoom_number,
+        compression_level=1.5,
+        uuid_name=files_id,
     )
 
-    return {
-        "message": f"Processed {upload_pdf_for_converter.filename}",
-        "number": zoom_number,
-    }
+    return {"message": "files_id"}
 
 
 @app.get("/download-pdf/{file_uuid}")
 async def download_pdf(file_uuid: str):
     """PDFファイルをダウンロードする"""
-    output_folder = "converter_output"
-    pdf_file_path = f"{output_folder}/{file_uuid}.pdf"
+    zip_file_path = "converter_output/" + file_uuid + ".zip"
 
-    return FileResponse(path=pdf_file_path, filename=f"{file_uuid}.pdf")
+    return FileResponse(path=zip_file_path, filename="converter_files.zip")

@@ -46,7 +46,7 @@ def converter_files(get_files, output_files, quality_number, uuid_name):
             os.remove(file)
 
 
-def pdf_capacity_converter(input_folder, output_folder, compression_level):
+def pdf_capacity_converter(input_folder, output_folder, compression_level, uuid_name):
     """conpress pdf function"""
     temp_folder = os.path.join(output_folder, "temp")  # 一時的にPNGを保存するフォルダ
 
@@ -56,9 +56,16 @@ def pdf_capacity_converter(input_folder, output_folder, compression_level):
     if not os.path.exists(temp_folder):
         os.makedirs(temp_folder)
 
-    # PDFをPNGに変換し、最終的なPDFに再変換
+    # UUID名をつけてPDF名を変更
     for pdf_file in os.listdir(input_folder):
         if pdf_file.endswith(".pdf"):
+            new_pdf_path = os.path.join(input_folder, str(uuid_name) + pdf_file)
+            old_pdf_path = os.path.join(input_folder, pdf_file)
+            os.rename(old_pdf_path, new_pdf_path)
+
+    # PDFをPNGに変換し、最終的なPDFに再変換
+    for pdf_file in os.listdir(input_folder):
+        if pdf_file.startswith(str(uuid_name)) and pdf_file.endswith(".pdf"):
             doc = fitz.open(os.path.join(input_folder, pdf_file))
             images = []
             for page_num in range(len(doc)):
@@ -67,7 +74,7 @@ def pdf_capacity_converter(input_folder, output_folder, compression_level):
                 mat = fitz.Matrix(zoom, zoom)
                 pix = page.get_pixmap(matrix=mat)
                 img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-                output_file = f"temp_{page_num}.png"  # 一時ファイル名
+                output_file = f"temp_{page_num}.png"
                 img.save(os.path.join(temp_folder, output_file))
 
                 img_path = os.path.join(temp_folder, output_file)
@@ -78,9 +85,7 @@ def pdf_capacity_converter(input_folder, output_folder, compression_level):
 
             # PDFにまとめる
             if images:
-                output_pdf = (
-                    os.path.splitext(pdf_file)[0] + "_compressed.pdf"
-                )  # 元のファイル名に基づく新しいファイル名
+                output_pdf = os.path.splitext(pdf_file)[0] + "_compressed.pdf"
                 output_path = os.path.join(output_folder, output_pdf)
                 images[0].save(output_path, save_all=True, append_images=images[1:])
 
@@ -90,3 +95,14 @@ def pdf_capacity_converter(input_folder, output_folder, compression_level):
 
     # 一時フォルダを削除
     shutil.rmtree(temp_folder)
+
+    # 最終的なPDFファイルのUUID名を削除し、ZIPファイルを作成
+    final_files = [
+        f for f in os.listdir(output_folder) if f.endswith("_compressed.pdf")
+    ]
+    with zipfile.ZipFile(os.path.join(output_folder, f"{uuid_name}.zip"), "w") as zipf:
+        for file in final_files:
+            zipf.write(
+                os.path.join(output_folder, file), arcname=file[len(str(uuid_name)) :]
+            )
+            os.remove(os.path.join(output_folder, file))
