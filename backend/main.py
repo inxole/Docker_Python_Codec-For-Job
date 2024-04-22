@@ -35,7 +35,7 @@ class Item(BaseModel):
     pages: int
 
 
-class Toggle:
+class ToggleTransDXF:
     """Change state Toggle"""
 
     def __init__(self):
@@ -54,17 +54,35 @@ class Toggle:
         return self.state
 
 
-toggle_instance = Toggle()
+class ToggleJPGPNG:
+    """Change state Toggle"""
+
+    def __init__(self):
+        self.state = True
+
+    def releace(self):
+        """No catch pdf files"""
+        self.state = True
+
+    def catch(self):
+        """Catch pdf files"""
+        self.state = False
+
+    def not_using(self):
+        """Get state"""
+        return self.state
+
+
+toggleDXF_instance = ToggleTransDXF()
+toggleJPGPNG_instance = ToggleJPGPNG()
 
 
 @app.post("/upload-pdf/")
 async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: str = Form(...)):
     """uvicorn uploads post"""
 
-    if toggle_instance.not_using():
-
-        toggle_instance.catch()
-
+    if toggleDXF_instance.not_using():
+        toggleDXF_instance.catch()
         upload_dir = "uploads"
         files_id = uuid.uuid4()
         file_save_path = os.path.join(upload_dir, upload_pdf_file.filename)
@@ -75,7 +93,7 @@ async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: str = Form(
         output = "output_folder"
         await extract_and_convert(upload_dir, output, pages, files_id)
 
-        toggle_instance.releace()
+        toggleDXF_instance.releace()
 
         return {"message": files_id, "number": pages}
 
@@ -95,22 +113,30 @@ async def converter_jpg_png_files(
     files: List[UploadFile] = File(...), quality_number: str = Form(...)
 ):
     """jpg and png compression function"""
-    file_paths = []
-    for file in files:
-        file_path = f"converter_upload/{file.filename}"
-        with open(file_path, "wb") as buffer:
-            copyfileobj(file.file, buffer)
-        file_paths.append(file_path)
+    if toggleJPGPNG_instance.not_using():
 
-    files_id = uuid.uuid4()
-    converter_files(
-        get_files="converter_upload",
-        output_files="converter_output",
-        quality_number=quality_number,
-        uuid_name=files_id,
-    )
+        toggleJPGPNG_instance.catch()
 
-    return {"file_names": files_id, "number": quality_number}
+        file_paths = []
+        for file in files:
+            file_path = f"converter_upload/{file.filename}"
+            with open(file_path, "wb") as buffer:
+                copyfileobj(file.file, buffer)
+            file_paths.append(file_path)
+
+        files_id = uuid.uuid4()
+        converter_files(
+            get_files="converter_upload",
+            output_files="converter_output",
+            quality_number=quality_number,
+            uuid_name=files_id,
+        )
+
+        toggleJPGPNG_instance.releace()
+
+        return {"message": files_id, "number": quality_number}
+
+    raise HTTPException(status_code=status.HTTP_423_LOCKED, detail="anyone using")
 
 
 @app.get("/download-jpg-and-png/{file_uuid}")
