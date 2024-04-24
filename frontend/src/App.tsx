@@ -1,81 +1,38 @@
-import React, { useState } from 'react'
-import './App.css'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import Commpress_jpg_and_png from './jpg_and_png_capacity_compression'
+import Commpress_pdf from './pdf_capacity_compression'
+import Converter_dxf from './converter_pdf_to_dxf'
 
 const App = () => {
-  const [file, setFile] = useState<File | null>()
-  // ページ範囲を管理するための状態を追加します
-  const [pageRange, setPageRange] = useState('')
-  const [uuid_number, setUuid_Number] = useState("")
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setFile(event.target.files[0])
-    }
-  }
-
-  // ページ範囲のハンドラーを更新します
-  const handlePageRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPageRange(event.target.value)
-  }
-
-  // ファイルアップロードの機能を更新します
-  const uploadFile = async () => {
-    if (!file) {
-      alert('ファイルを選択してください')
-      return
-    }
-
-    // ページ範囲の形式を検証します
-    const pageRangeRegex = /^(\d+(-\d+)?)(,\d+(-\d+)?)*$/
-    if (!pageRangeRegex.test(pageRange)) {
-      alert('ページ範囲が正しくありません。')
-      return
-    }
-
-    const formData = new FormData();
-    formData.append('upload_pdf_file', file)
-    // ページ範囲をフォームデータに追加します
-    formData.append('pages', pageRange)
-
-    const response = await fetch('http://localhost:8000/upload-pdf/', {
-      method: 'POST',
-      body: formData,
-    })
-
-
-    if (response.status == 200) {
-      const responce_data = await response.json()
-      if (responce_data === null) {
-        throw new Error('Some processing failed.')
-      }
-      setUuid_Number(responce_data.message)
-      alert('変換が完了しました。')
-    } else if (response.status == 423) {
-      alert('他の人が利用中です。')
-    }
-  }
-
   return (
-    <div className="flex flex-col items-center justify-center pt-20 space-y-4" style={{ paddingTop: '200px' }}>
-      <h1 className="text-3xl font-bold underline">PDF to DXF Converter</h1>
-      <input className="border-2 border-gray-300 p-2 rounded-md w-80" type="file" onChange={handleFileChange} />
-      <div>
-        <label htmlFor="pageRange" className="block text-sm font-medium text-gray-700">ページ範囲を指定:</label>
-        <input
-          id="pageRange"
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          type="text"
-          placeholder="例：1, 3~10"
-          value={pageRange}
-          onChange={handlePageRangeChange}
-        />
-      </div>
-      <button className="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-700 transition duration-200 ease-in-out" onClick={uploadFile}>変換</button>
-      <a href={`http://localhost:8000/download-dxf-zip/${uuid_number}`} target='_blank' rel='noopener noreferrer'>
-        <button className="px-4 py-2 bg-green-500 text-white rounded shadow hover:bg-green-700 transition duration-200 ease-in-out">ダウンロード</button>
-      </a>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/compress-jpg-png" element={<Commpress_jpg_and_png />} />
+        <Route path="/compress-pdf" element={<Commpress_pdf />} />
+        <Route path="/convert-to-dxf" element={<Converter_dxf />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
 export default App
+
+function Home() {
+  return (
+    <div className="grid grid-cols-2 gap-4 p-8 justify-items-center">
+      <Link to="/compress-jpg-png" className="bg-blue-500 text-white p-4 w-72 h-72 rounded-lg text-center justify-self-end">
+        <img src="src/icon_image/icon_jpg_and_png_compressor.png" alt="JPG and PNG Compression" className="w-48 h-48 mx-auto mb-4" />
+        <p>JPG & PNG 圧縮</p>
+      </Link>
+      <Link to="/compress-pdf" className="bg-green-500 text-white p-4 w-72 rounded-lg text-center justify-self-start">
+        <img src="src/icon_image/icon_pdf_compressor.png" alt="PDF Compression" className="w-48 h-48 mx-auto mb-4" />
+        <p>PDF 圧縮</p>
+      </Link>
+      <Link to="/convert-to-dxf" className="bg-yellow-500 text-white p-4 w-72 rounded-lg text-center justify-self-end">
+        <img src="src/icon_image/icon_pdf_to_dxf_converter.png" alt="Convert to DXF" className="w-48 h-48 mx-auto mb-4" />
+        <p>DXF 変換</p>
+      </Link>
+    </div>
+  )
+}
