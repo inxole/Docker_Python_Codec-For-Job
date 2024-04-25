@@ -11,7 +11,9 @@ const Commpress_jpg_and_png = () => {
     if (event.target.files) {
       const fileList = Array.from(event.target.files)
       const isValid = fileList.every(file =>
-        file.name.endsWith('.jpg') || file.name.endsWith('.jpeg') || file.name.endsWith('.png')
+        file.name.toLowerCase().endsWith('.jpg') ||
+        file.name.toLowerCase().endsWith('.jpeg') ||
+        file.name.toLowerCase().endsWith('.png')
       )
 
       if (!isValid) {
@@ -50,14 +52,14 @@ const Commpress_jpg_and_png = () => {
       body: formData,
     })
 
-    const responseData = await response.json()
-    if (responseData.status == 200) {
+    if (response.status == 200) {
+      const responseData = await response.json()
       if (responseData === null) {
         throw new Error('Some processing failed.')
       }
       setUuidNumber(responseData.message)
       alert('圧縮が完了しました。')
-    } else if (responseData.status == 423) {
+    } else if (response.status == 423) {
       alert(`ほかの人が使用中です。`)
     }
   }

@@ -23,6 +23,10 @@ def scheduled_deletion():
     delete_files_in_directory(directory_to_clean_1)
     directory_to_clean_2 = "output_folder"
     delete_files_in_directory(directory_to_clean_2)
+    directory_to_clean_3 = "converter_upload"
+    delete_files_in_directory(directory_to_clean_3)
+    directory_to_clean_4 = "converter_output"
+    delete_files_in_directory(directory_to_clean_4)
 
 
 if __name__ == "__main__":
