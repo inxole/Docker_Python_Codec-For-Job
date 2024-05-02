@@ -54,6 +54,28 @@ const Converter_dxf = () => {
     }
   }
 
+  const downloadFile = async () => {
+    if (uuid_number === "") {
+      alert('先にファイルをアップロードしてください。')
+      return
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8000/download-dxf-zip/${uuid_number}`);
+
+      if (response.status === 200) {
+        window.location.href = response.url
+      } else if (response.status === 404) {
+        alert('ファイルがまだ処理されていません。')
+      } else {
+        alert('何らかのエラーが発生しました。')
+      }
+    } catch (error) {
+      console.error('Error fetching data: ', error)
+      alert('サーバーに接続できませんでした。')
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center pt-20 space-y-4" style={{ paddingTop: '200px' }}>
       <h1 className="text-3xl font-bold underline">PDF to DXF Converter</h1>
@@ -70,7 +92,7 @@ const Converter_dxf = () => {
         />
       </div>
       <button className="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-700 transition duration-200 ease-in-out" onClick={uploadFile}>変換</button>
-      <a href={`http://localhost:8000/download-dxf-zip/${uuid_number}`} target='_blank' rel='noopener noreferrer'>
+      <a href="#" onClick={downloadFile}>
         <button className="px-4 py-2 bg-green-500 text-white rounded shadow hover:bg-green-700 transition duration-200 ease-in-out">ダウンロード</button>
       </a>
     </div>

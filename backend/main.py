@@ -126,6 +126,9 @@ async def download_dxf_zip(file_uuid):
     """get download zip files"""
     zip_file_path = "output_folder/" + file_uuid + ".zip"
 
+    if not os.path.exists(zip_file_path):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+
     return FileResponse(path=zip_file_path, filename="dxf_files.zip")
 
 
@@ -164,6 +167,9 @@ async def download_jpg_and_png_zip(file_uuid):
     """get download jpg and png in zip files"""
     zip_file_path = "converter_output/" + file_uuid + ".zip"
 
+    if not os.path.exists(zip_file_path):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+
     return FileResponse(path=zip_file_path, filename="converter_files.zip")
 
 
@@ -195,5 +201,8 @@ async def converter_pdf(upload_pdf_for_converter: UploadFile = File(...)):
 async def download_pdf(file_uuid):
     """get download pdf in zip files"""
     zip_file_path = "converter_output/" + file_uuid + ".zip"
+
+    if not os.path.exists(zip_file_path):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
 
     return FileResponse(path=zip_file_path, filename="converter_files.zip")
