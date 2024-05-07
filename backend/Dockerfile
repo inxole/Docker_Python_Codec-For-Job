@@ -21,6 +21,7 @@ RUN pip install --no-cache-dir \
   matplotlib \
   pandas \
   openpyxl \
+  aiofiles \
   && rm -rf /root/.cache
 
 WORKDIR /app

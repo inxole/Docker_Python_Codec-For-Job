@@ -127,7 +127,9 @@ async def download_dxf_zip(file_uuid):
     zip_file_path = "output_folder/" + file_uuid + ".zip"
 
     if not os.path.exists(zip_file_path):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
 
     return FileResponse(path=zip_file_path, filename="dxf_files.zip")
 
@@ -148,7 +150,7 @@ async def converter_jpg_png_files(
             file_paths.append(file_path)
 
         files_id = uuid.uuid4()
-        converter_files(
+        await converter_files(
             get_files="converter_upload",
             output_files="converter_output",
             quality_number=quality_number,
@@ -168,7 +170,9 @@ async def download_jpg_and_png_zip(file_uuid):
     zip_file_path = "converter_output/" + file_uuid + ".zip"
 
     if not os.path.exists(zip_file_path):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
 
     return FileResponse(path=zip_file_path, filename="converter_files.zip")
 
@@ -184,7 +188,7 @@ async def converter_pdf(upload_pdf_for_converter: UploadFile = File(...)):
             copyfileobj(upload_pdf_for_converter.file, buffer)
 
         files_id = uuid.uuid4()
-        pdf_capacity_converter(
+        await pdf_capacity_converter(
             input_folder="converter_upload",
             output_folder="converter_output",
             compression_level=1.5,
@@ -203,6 +207,8 @@ async def download_pdf(file_uuid):
     zip_file_path = "converter_output/" + file_uuid + ".zip"
 
     if not os.path.exists(zip_file_path):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
 
     return FileResponse(path=zip_file_path, filename="converter_files.zip")
