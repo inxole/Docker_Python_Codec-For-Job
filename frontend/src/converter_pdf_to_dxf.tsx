@@ -95,6 +95,7 @@ const Converter_dxf = () => {
       <a href="#" onClick={downloadFile}>
         <button className="px-4 py-2 bg-green-500 text-white rounded shadow hover:bg-green-700 transition duration-200 ease-in-out">ダウンロード</button>
       </a>
+      <p className="text-lg px-4 py-2 text-red-500">※現在、ベクター形式のPDFファイルしか変換できません。</p>
     </div>
   )
 }
