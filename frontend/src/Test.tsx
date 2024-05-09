@@ -42,7 +42,9 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 pt-10">
       <h2 className="text-xl font-bold mb-4">ご意見・ご要望</h2>
-      <p className="text-lg px-4 py-2">例１：～が欲しいです。</p>
+      <p className="text-lg px-4 py-2">例１：自動的にスケジュールを管理するソフトウェアが欲しいです。</p>
+      <p className="text-lg px-4 py-2">例２：「使用方法」を各プログラムに作成してください。</p>
+      <p className="text-lg px-4 py-2">例３：「DXF変換」が使いにくいです。</p>
       <form onSubmit={handleSubmit} className="w-full max-w-lg">
         <textarea
           value={content}
@@ -52,7 +54,7 @@ const App: React.FC = () => {
           rows={3}
         />
         <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded shadow">
-          Submit
+          登録
         </button>
       </form>
       <div className="mt-4 w-full max-w-lg">
@@ -63,7 +65,7 @@ const App: React.FC = () => {
               onClick={() => handleDelete(opinion.id)}
               className="ml-4 px-4 py-2 bg-red-500 text-white rounded shadow"
             >
-              Delete
+              削除
             </button>
           </div>
         ))}
