@@ -6,6 +6,7 @@ const Commpress_jpg_and_png = () => {
   const [files, setFiles] = useState<File[]>([])
   const [qualityRange, setQualityRange] = useState('40')
   const [uuidNumber, setUuidNumber] = useState("")
+  const domain = 'http://192.168.3.13:8000'
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -47,9 +48,12 @@ const Commpress_jpg_and_png = () => {
     })
     formData.append('quality_number', qualityRange)
 
-    const response = await fetch('http://localhost:8000/upload_jpg_or_png/', {
+    const response = await fetch(domain + '/upload_jpg_or_png/', {
       method: 'POST',
       body: formData,
+      headers: {
+        'Access-Control-Allow-Origin': domain
+      },
     })
 
     if (response.status == 200) {
@@ -71,8 +75,12 @@ const Commpress_jpg_and_png = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/download-jpg-and-png/${uuidNumber}`);
-
+      const response = await fetch(domain + `/download-jpg-and-png/${uuidNumber}`, {
+        method: 'GET',
+        headers: {
+          'Access-Control-Allow-Origin': domain
+        },
+      })
       if (response.status === 200) {
         window.location.href = response.url
       } else if (response.status === 404) {

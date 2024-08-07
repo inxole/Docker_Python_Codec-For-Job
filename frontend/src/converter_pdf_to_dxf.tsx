@@ -6,6 +6,7 @@ const Converter_dxf = () => {
   // ページ範囲を管理するための状態を追加します
   const [pageRange, setPageRange] = useState('')
   const [uuid_number, setUuid_Number] = useState("")
+  const domain = 'http://192.168.3.13:8000'
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -37,9 +38,12 @@ const Converter_dxf = () => {
     // ページ範囲をフォームデータに追加します
     formData.append('pages', pageRange)
 
-    const response = await fetch('http://localhost:8000/upload-pdf/', {
+    const response = await fetch(domain + '/upload-pdf/', {
       method: 'POST',
       body: formData,
+      headers: {
+        'Access-Control-Allow-Origin': domain
+      },
     })
 
     if (response.status == 200) {
@@ -61,7 +65,12 @@ const Converter_dxf = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/download-dxf-zip/${uuid_number}`);
+      const response = await fetch(domain + `/download-dxf-zip/${uuid_number}`, {
+        method: 'GET',
+        headers: {
+          'Access-Control-Allow-Origin': domain
+        },
+      })
 
       if (response.status === 200) {
         window.location.href = response.url

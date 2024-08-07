@@ -4,6 +4,7 @@ import './App.css'
 const Commpress_pdf = () => {
   const [file, setFile] = useState<File | null>(null)
   const [uuid_number, setUuid_Number] = useState("")
+  const domain = 'http://192.168.3.13:8000'
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -27,9 +28,12 @@ const Commpress_pdf = () => {
     const formData = new FormData()
     formData.append('upload_pdf_for_converter', file)
 
-    const response = await fetch('http://localhost:8000/pdf_for_compression/', {
+    const response = await fetch(domain + '/pdf_for_compression/', {
       method: 'POST',
       body: formData,
+      headers: {
+        'Access-Control-Allow-Origin': domain
+      },
     })
 
     if (response.status === 200) {
@@ -51,7 +55,12 @@ const Commpress_pdf = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/download-pdf/${uuid_number}`);
+      const response = await fetch(domain + `/download-pdf/${uuid_number}`, {
+        method: 'GET',
+        headers: {
+          'Access-Control-Allow-Origin': domain
+        },
+      })
 
       if (response.status === 200) {
         window.location.href = response.url
