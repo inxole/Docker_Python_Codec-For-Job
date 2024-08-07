@@ -8,9 +8,15 @@ interface Opinion {
 const App: React.FC = () => {
   const [opinions, setOpinions] = useState<Opinion[]>([])
   const [content, setContent] = useState('')
+  const domain = 'http://192.168.3.13:8000'
 
   useEffect(() => {
-    fetch('http://localhost:8000/opinions/')
+    fetch(domain + '/opinions/', {
+      method: 'GET',
+      headers: {
+        'Access-Control-Allow-Origin': domain
+      },
+    })
       .then(response => response.json())
       .then(data => setOpinions(data))
   }, [])
@@ -18,12 +24,13 @@ const App: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     const newOpinion = { id: String(Math.random()), content }
-    const response = await fetch('http://localhost:8000/opinions/', {
+    const response = await fetch(domain + '/opinions/', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': domain,
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(newOpinion),
+      body: JSON.stringify(newOpinion)
     })
     const result = await response.json()
     setOpinions([result, ...opinions])
@@ -31,11 +38,14 @@ const App: React.FC = () => {
   }
 
   const handleDelete = async (opinionId: string) => {
-    const response = await fetch(`http://localhost:8000/opinions/${opinionId}`, {
+    const response = await fetch(domain + '/opinions/' + opinionId, {
       method: 'DELETE',
+      headers: {
+        'Access-Control-Allow-Origin': domain
+      },
     })
     if (response.ok) {
-      setOpinions(opinions.filter((opinion) => opinion.id !== opinionId))
+      setOpinions(opinions.filter(opinion => opinion.id !== opinionId))
     }
   }
 

@@ -15,8 +15,8 @@ from pdf_to_dxf import extract_and_convert
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173",
-    "http://localhost:8000",
+    "http://192.168.3.13:5173",
+    "http://192.168.3.13:8000",
 ]
 
 # CORSの設定
@@ -28,10 +28,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 class Item(BaseModel):
     """Pydantic model add pages"""
-
     pages: int
 
 
@@ -94,7 +92,6 @@ class TogglePDF:
 
 class Opinion(BaseModel):
     """test"""
-
     id: str
     content: str
 
@@ -125,7 +122,8 @@ async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: str = Form(
 
         return {"message": files_id, "number": pages}
 
-    raise HTTPException(status_code=status.HTTP_423_LOCKED, detail="anyone using")
+    raise HTTPException(status_code=status.HTTP_423_LOCKED,
+                        detail="anyone using")
 
 
 @app.get("/download-dxf-zip/{file_uuid}")
@@ -168,7 +166,8 @@ async def converter_jpg_png_files(
 
         return {"message": files_id, "number": quality_number}
 
-    raise HTTPException(status_code=status.HTTP_423_LOCKED, detail="anyone using")
+    raise HTTPException(status_code=status.HTTP_423_LOCKED,
+                        detail="anyone using")
 
 
 @app.get("/download-jpg-and-png/{file_uuid}")
@@ -205,7 +204,8 @@ async def converter_pdf(upload_pdf_for_converter: UploadFile = File(...)):
         togglePDF_instance.releace()
         return {"message": files_id}
 
-    raise HTTPException(status_code=status.HTTP_423_LOCKED, detail="anyone using")
+    raise HTTPException(status_code=status.HTTP_423_LOCKED,
+                        detail="anyone using")
 
 
 @app.get("/download-pdf/{file_uuid}")
