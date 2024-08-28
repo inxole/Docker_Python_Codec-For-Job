@@ -1,11 +1,16 @@
 services:
   frontend:
     build:
-      context: .
-      dockerfile: ./Dockerfile
+      context: ..
+      dockerfile: ./frontend/Dockerfile
     tty: true
     volumes:
-      - .:/app
+      - ..:/app
+      - node_modules:/app/frontend/node_modules
+      - pnpm-store:/app/frontend/.pnpm-store
     ports:
       - 5173:5173
-    entrypoint: ["/bin/bash"]
+    entrypoint: ["pnpm","dev","--host"]
+volumes:
+  node_modules:
+  pnpm-store:
