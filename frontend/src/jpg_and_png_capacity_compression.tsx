@@ -6,7 +6,7 @@ const Commpress_jpg_and_png = () => {
   const [files, setFiles] = useState<File[]>([])
   const [qualityRange, setQualityRange] = useState('40')
   const [uuidNumber, setUuidNumber] = useState("")
-  const domain = 'http://192.168.3.13:8000'
+  const domain = import.meta.env.VITE_BACK_URL
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {

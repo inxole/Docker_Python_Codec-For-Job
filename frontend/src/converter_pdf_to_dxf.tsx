@@ -6,7 +6,7 @@ const Converter_dxf = () => {
   // ページ範囲を管理するための状態を追加します
   const [pageRange, setPageRange] = useState('')
   const [uuid_number, setUuid_Number] = useState("")
-  const domain = 'http://192.168.3.13:8000'
+  const domain = import.meta.env.VITE_BACK_URL
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {

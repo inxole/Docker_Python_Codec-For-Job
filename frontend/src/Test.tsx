@@ -8,7 +8,7 @@ interface Opinion {
 const App: React.FC = () => {
   const [opinions, setOpinions] = useState<Opinion[]>([])
   const [content, setContent] = useState('')
-  const domain = 'http://192.168.3.13:8000'
+  const domain = import.meta.env.VITE_BACK_URL
 
   useEffect(() => {
     fetch(domain + '/opinions/', {

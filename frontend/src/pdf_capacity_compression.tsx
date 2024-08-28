@@ -4,7 +4,7 @@ import './App.css'
 const Commpress_pdf = () => {
   const [file, setFile] = useState<File | null>(null)
   const [uuid_number, setUuid_Number] = useState("")
-  const domain = 'http://192.168.3.13:8000'
+  const domain = import.meta.env.VITE_BACK_URL
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
