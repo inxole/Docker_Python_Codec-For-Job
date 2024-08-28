@@ -24,4 +24,6 @@ RUN pip install --no-cache-dir \
   aiofiles \
   && rm -rf /root/.cache
 
-WORKDIR /app
+WORKDIR /app/backend
+
+ENTRYPOINT ["/bin/bash"]
