@@ -22,7 +22,8 @@ RUN pip install --no-cache-dir \
   pandas \
   openpyxl \
   aiofiles \
-  && rm -rf /root/.cache
+  && rm -rf /root/.cache \
+  python-dotenv
 
 WORKDIR /app/backend
 
