@@ -11,6 +11,7 @@ services:
     ports:
       - 5173:5173
     entrypoint: ["pnpm","dev","--host"]
+    restart: always
 volumes:
   node_modules:
   pnpm-store:
