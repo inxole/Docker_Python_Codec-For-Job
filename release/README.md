@@ -1,8 +1,14 @@
 # release
 
+`subdomain1.example.com`や`subdomain2.example.com`は、
+「フロントエンド、バックエンド、証明書の中身と利用者PCの`hosts`」
+の全てで統一する必要がある。
+
 ## Setup
 
-ブラウザにインストールする認証局証明書`ca.crt`
+### 認証局証明書作成
+
+ブラウザにインストールする認証局証明書`ca.crt`を作成
 
 ```bash
 # CA 秘密鍵の生成
@@ -13,7 +19,9 @@ openssl req -x509 -new -nodes -key ca.key -sha256 -days 1024 -out ca.crt \
   -subj "/C=JP/ST=Aichi/L=Nagoya/O=YourOrganization/OU=IT/CN=your-ca.com"
 ```
 
-Nginxにインストールするサーバー証明書
+### サーバー証明書作成
+
+Nginxにインストールするサーバー証明書`*.crt`とその秘密鍵`*.key`を作成
 
 ```bash
 # subdomain1の証明書生成
@@ -31,13 +39,27 @@ openssl x509 -req -in subdomain2.csr \
   -CA ca.crt -CAkey ca.key -CAcreateserial -out subdomain2.crt -days 365 -sha256
 ```
 
-`release/compose.yaml`で使うために配置する
+### コンテナ設定
+
+`release/compose.yaml`で使うために証明書を配置する
 
 ```bash
-mkdir -p ./backup/
-cp ./certs/server.* ./backup/ # 期限切れ証明書のバックアップ
-mv ./server.* ./certs/
+mkdir -p ./release/backup/
+cp ./release/certs/* ./release/backup/ # 期限切れ証明書のバックアップ
+mv ./release/subdomain1.{csr,key} ./release/certs/
+mv ./release/subdomain2.{csr,key} ./release/certs/
 ```
+
+環境変数を設定
+
+```.env
+FRONTEND_URL=subdomain1.example.com
+BACKEND_URL=subdomain2.example.com
+```
+
+### コンテナ起動
+
+`../deploy.sh`でdockerコンテナを起動
 
 ## How to access from client
 
@@ -50,3 +72,4 @@ subdomain2.example.com x.x.x.x
 
 ipではなくpcのhostnameでも可能
 
+<https://localhost/>にアクセス
