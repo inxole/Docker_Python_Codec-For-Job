@@ -46,8 +46,8 @@ openssl x509 -req -in subdomain2.csr \
 ```bash
 mkdir -p ./release/backup/
 cp ./release/certs/* ./release/backup/ # 期限切れ証明書のバックアップ
-mv ./release/subdomain1.{csr,key} ./release/certs/
-mv ./release/subdomain2.{csr,key} ./release/certs/
+mv ./release/subdomain1.{crt,key} ./release/certs/
+mv ./release/subdomain2.{crt,key} ./release/certs/
 ```
 
 環境変数を設定
