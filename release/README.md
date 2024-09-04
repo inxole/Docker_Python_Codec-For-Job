@@ -1,6 +1,6 @@
 # release
 
-`subdomain1.example.com`や`subdomain2.example.com`は、
+`subdomain1.example.com`は、
 「フロントエンド、バックエンド、証明書の中身と利用者PCの`hosts`」
 の全てで統一する必要がある。
 
@@ -30,13 +30,6 @@ openssl req -new -key subdomain1.key -out subdomain1.csr \
   -subj "/C=JP/ST=Aichi/L=Nagoya/O=YourOrganization/OU=Server/CN=subdomain1.example.com"
 openssl x509 -req -in subdomain1.csr \
   -CA ca.crt -CAkey ca.key -CAcreateserial -out subdomain1.crt -days 365 -sha256
-
-# subdomain2の証明書生成
-openssl genrsa -out subdomain2.key 2048
-openssl req -new -key subdomain2.key -out subdomain2.csr \
-  -subj "/C=JP/ST=Aichi/L=Nagoya/O=YourOrganization/OU=Server/CN=subdomain2.example.com"
-openssl x509 -req -in subdomain2.csr \
-  -CA ca.crt -CAkey ca.key -CAcreateserial -out subdomain2.crt -days 365 -sha256
 ```
 
 ### コンテナ設定
@@ -47,21 +40,20 @@ openssl x509 -req -in subdomain2.csr \
 mkdir -p ./release/backup/
 cp ./release/certs/* ./release/backup/ # 期限切れ証明書のバックアップ
 mv ./release/subdomain1.{crt,key} ./release/certs/
-mv ./release/subdomain2.{crt,key} ./release/certs/
 ```
 
 #### 環境変数を設定
 
 ```.env
 Front_URL=http://subdomain1.example.com
-VITE_BACK_URL=http://subdomain2.example.com
+VITE_BACK_URL=http://subdomain1.example.com/api
 ```
 
 ### コンテナ起動
 
 `../deploy.sh`でdockerコンテナを起動
 
-<https://localhost/>と<https://localhost:8000>にアクセスして動作確認
+<https://localhost/>と<http://localhost:8000>にアクセスして動作確認
 
 ## How to access from client
 
@@ -73,8 +65,8 @@ Windowsの`hosts`ファイルに下記を追記
 
 ```text
 x.x.x.x subdomain1.example.com 
-x.x.x.x subdomain2.example.com
 ```
 
-<https://subdomain1.example.com> と <https://subdomain2.example.com/docs>
+<https://subdomain1.example.com> と
+<https://subdomain2.example.com/api/docs>
 にアクセスして動作確認。

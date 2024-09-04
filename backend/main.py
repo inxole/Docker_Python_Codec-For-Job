@@ -13,7 +13,7 @@ from pdf_to_dxf import extract_and_convert
 from dotenv import load_dotenv
 
 
-app = FastAPI()
+app = FastAPI(root_path="/api")
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path)
