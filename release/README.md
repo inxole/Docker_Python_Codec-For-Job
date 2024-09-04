@@ -68,5 +68,5 @@ x.x.x.x subdomain1.example.com
 ```
 
 <https://subdomain1.example.com> と
-<https://subdomain2.example.com/api/docs>
+<https://subdomain1.example.com/api/docs>
 にアクセスして動作確認。
