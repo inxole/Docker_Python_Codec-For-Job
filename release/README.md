@@ -41,7 +41,7 @@ openssl x509 -req -in subdomain2.csr \
 
 ### コンテナ設定
 
-`release/compose.yaml`で使うために証明書を配置する
+#### `release/compose.yaml`で使うために証明書を配置する
 
 ```bash
 mkdir -p ./release/backup/
@@ -50,26 +50,31 @@ mv ./release/subdomain1.{crt,key} ./release/certs/
 mv ./release/subdomain2.{crt,key} ./release/certs/
 ```
 
-環境変数を設定
+#### 環境変数を設定
 
 ```.env
-FRONTEND_URL=subdomain1.example.com
-BACKEND_URL=subdomain2.example.com
+Front_URL=http://subdomain1.example.com
+VITE_BACK_URL=http://subdomain2.example.com
 ```
 
 ### コンテナ起動
 
 `../deploy.sh`でdockerコンテナを起動
 
+<https://localhost/>と<https://localhost:8000>にアクセスして動作確認
+
 ## How to access from client
+
+任意のPCで上記の`ca.crt`をインストールする。
 
 Windowsの`hosts`ファイルに下記を追記
 
+`x.x.x.x`はこのドッカーコンテナを起動している物理マシンのIPもしくはhostname
+
 ```text
-subdomain1.example.com x.x.x.x
-subdomain2.example.com x.x.x.x
+x.x.x.x subdomain1.example.com 
+x.x.x.x subdomain2.example.com
 ```
 
-ipではなくpcのhostnameでも可能
-
-<https://localhost/>にアクセス
+<https://subdomain1.example.com> と <https://subdomain2.example.com/docs>
+にアクセスして動作確認。
