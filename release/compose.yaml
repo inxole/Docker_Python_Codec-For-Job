@@ -8,6 +8,7 @@ services:
       - dist:/app
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/nginx/certs
+      - .env:/app/.env
     restart: always
   backend:
     build:
