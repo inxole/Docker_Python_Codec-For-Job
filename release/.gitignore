@@ -1,0 +1,3 @@
+certs/**
+backup/**
+san.ext
