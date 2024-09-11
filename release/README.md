@@ -6,6 +6,17 @@
 
 ## Setup
 
+### opensslコマンドの設定ファイル作成
+
+```san.ext
+[ san_ext ]
+subjectAltName = @alt_names
+
+[alt_names ]
+DNS.1 = subdomain1.example.com
+IP.1 = 192.168.3.120
+```
+
 ### 認証局証明書作成
 
 ブラウザにインストールする認証局証明書`ca.crt`を作成
@@ -29,6 +40,7 @@ openssl genrsa -out subdomain1.key 2048
 openssl req -new -key subdomain1.key -out subdomain1.csr \
   -subj "/C=JP/ST=Aichi/L=Nagoya/O=YourOrganization/OU=Server/CN=subdomain1.example.com"
 openssl x509 -req -in subdomain1.csr \
+  -extfile san.ext -extensions san_ext \
   -CA ca.crt -CAkey ca.key -CAcreateserial -out subdomain1.crt -days 365 -sha256
 ```
 
