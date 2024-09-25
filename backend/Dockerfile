@@ -22,6 +22,8 @@ RUN pip install --no-cache-dir \
   pandas \
   openpyxl \
   aiofiles \
+  mysqlclient \ 
+  sqlmodel \
   && rm -rf /root/.cache \
   python-dotenv
 
