@@ -33,6 +33,8 @@ services:
       MYSQL_USER: test
       MYSQL_PASSWORD: test
     restart: always
+    volumes:
+      - mysql-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -53,3 +55,4 @@ volumes:
   dist:
   node_modules:
   pnpm-store:
+  mysql-data:
