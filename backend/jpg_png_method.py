@@ -58,6 +58,12 @@ async def converter_jpg_png_files(
             uuid_name=files_id,
         )
 
+        # 入力フォルダ内の全ファイルを削除
+        for file_name in os.listdir("converter_upload"):
+            file_path = os.path.join("converter_upload", file_name)
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.remove(file_path)
+
         toggleJPGPNG_instance.releace()
 
         return {"message": files_id, "number": quality_number}

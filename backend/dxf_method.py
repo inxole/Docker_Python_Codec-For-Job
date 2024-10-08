@@ -56,6 +56,12 @@ async def upload_pdf(upload_pdf_file: UploadFile = File(...), pages: str = Form(
         output = "output_folder"
         await extract_and_convert(upload_dir, output, pages, files_id)
 
+        # 入力フォルダ内の全ファイルを削除
+        for file_name in os.listdir("uploads"):
+            file_path = os.path.join("uploads", file_name)
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.remove(file_path)
+
         toggleDXF_instance.releace()
 
         return {"message": files_id, "number": pages}
