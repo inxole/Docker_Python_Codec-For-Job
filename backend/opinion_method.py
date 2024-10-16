@@ -54,7 +54,7 @@ def delete_opinion(opinion_id: str):
         opinion = session.get(Opinion, opinion_id)
         if not opinion:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Opinion not found")
+                status_code=status.HTTP_404_NOT_FOUND, detail="Opinion not found")
         session.delete(opinion)
         session.commit()
     return {"message": "Opinion deleted"}
