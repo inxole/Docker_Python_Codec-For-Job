@@ -1,7 +1,7 @@
 """pdf to dxf converter script"""
 
-from fastapi import APIRouter, HTTPException
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from fastapi import APIRouter, HTTPException, status
+from sqlmodel import Session, SQLModel, create_engine, Field, select
 
 
 class Opinion(SQLModel, table=True):
@@ -36,7 +36,7 @@ def create_opinion(opinion: Opinion):
         return saved_opinion
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail="Error saving opinion") from e
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error saving opinion") from e
 
 
 @router.get("/opinions/")
@@ -45,7 +45,7 @@ def read_opinions():
         return load_opinions()
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail="Error loading opinions") from e
+            status_code=status.HTTP_404_NOT_FOUND, detail="Error loading opinions") from e
 
 
 @router.delete("/opinions/{opinion_id}")
@@ -53,7 +53,8 @@ def delete_opinion(opinion_id: str):
     with Session(engine) as session:
         opinion = session.get(Opinion, opinion_id)
         if not opinion:
-            raise HTTPException(status_code=404, detail="Opinion not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=f'Opinion with id {opinion_id} not found')
         session.delete(opinion)
         session.commit()
     return {"message": "Opinion deleted"}
