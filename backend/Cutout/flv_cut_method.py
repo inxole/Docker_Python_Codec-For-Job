@@ -4,7 +4,7 @@ import os
 import uuid
 from fastapi import HTTPException, UploadFile, status, APIRouter, Form, File
 from fastapi.responses import FileResponse
-from movie_cutout import extract_frame
+from Cutout.movie_cutout import extract_frame
 
 
 router = APIRouter()

@@ -6,8 +6,8 @@ from typing import List
 from fastapi import HTTPException, UploadFile, status, APIRouter, Form, File
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from split_pdf import pdf_split
-from tie_pdf import pdf_tie
+from Split_Tie.split_pdf import pdf_split
+from Split_Tie.tie_pdf import pdf_tie
 
 
 router = APIRouter()
