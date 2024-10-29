@@ -4,7 +4,7 @@ import Commpress_pdf from './pdf_capacity_compression'
 import Converter_dxf from './converter_pdf_to_dxf'
 import SplitOrTiePDF from './pdf_split_or_tie'
 import Cutout_Video from './flv_cutout'
-import Test from './Test'
+import OpinionForm from './opinion'
 import jpg_and_png_compressor_icon from './icon_image/icon_jpg_and_png_compressor.png'
 import PdfCompressorIcon from './icon_image/icon_pdf_compressor.png'
 import DxfConverterIcon from './icon_image/icon_pdf_to_dxf_converter.png'
@@ -52,7 +52,7 @@ function Home() {
         </Link>
       </div>
       <div>
-        <Test />
+        <OpinionForm />
       </div>
     </div>
   )
