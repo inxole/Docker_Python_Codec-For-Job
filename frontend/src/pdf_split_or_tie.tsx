@@ -153,10 +153,10 @@ const SplitOrTiePDF = () => {
 
   return (
     <div className="flex flex-col items-center justify-center pt-20 space-y-4" style={{ paddingTop: '200px', position: 'relative' }}>
-      <h1 className="text-3xl font-bold underline">PDF Split and Tie</h1>
+      <h1 className="text-3xl font-bold underline">PDF 分割・結合</h1>
 
       <div className="flex space-x-8">
-        <div>
+        <div className="border-2 border-gray-300 rounded-md p-4">
           <h2 className="text-xl font-bold">PDF 分割</h2>
           <div className="flex flex-col items-center">
             <input className="border-2 border-gray-300 p-2 rounded-md w-80" type="file" onChange={handleSplitFileChange} accept=".pdf" />
@@ -180,10 +180,10 @@ const SplitOrTiePDF = () => {
           </div>
         </div>
 
-        <div>
+        <div className="border-2 border-gray-300 rounded-md p-4">
           <h2 className="text-xl font-bold">PDF 結合</h2>
           <div className="flex flex-col items-center">
-            <input className="border-2 border-gray-300 p-2 rounded-md w-80 size-60" multiple type="file" onChange={handleTieFileChange} accept=".pdf" />
+            <input className="border-2 border-gray-300 p-2 rounded-md w-80" multiple type="file" onChange={handleTieFileChange} accept=".pdf" />
             <button
               className="w-24 px-4 py-2 mt-2 bg-blue-500 text-white rounded shadow hover:bg-blue-700 transition duration-200 ease-in-out"
               onClick={uploadTieFile}
