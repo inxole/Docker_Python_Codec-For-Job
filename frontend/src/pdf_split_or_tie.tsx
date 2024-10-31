@@ -4,7 +4,7 @@ import { TailSpin } from 'react-loader-spinner'
 
 const SplitOrTiePDF = () => {
   const [splitFile, setSplitFile] = useState<File | null>(null)
-  const [tieFile, setTieFile] = useState<File | null>(null)
+  const [tieFile, setTieFile] = useState<File[]>([])
   const [uuidNumber, setUuidNumber] = useState('')
   const [loading, setLoading] = useState(false)
   const [pageRange, setPageRange] = useState('')
@@ -28,13 +28,18 @@ const SplitOrTiePDF = () => {
   }
 
   const handleTieFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const selectedFile = event.target.files[0]
-      if (selectedFile.type !== 'application/pdf') {
+    if (event.target.files) {
+      const fileList = Array.from(event.target.files)
+      const isValid = fileList.every(file =>
+        file.name.toLowerCase().endsWith('.pdf') ||
+        file.name.toUpperCase().endsWith('.PDF')
+      )
+      if (!isValid) {
         alert('PDFファイルのみ選択してください。')
-        setTieFile(null)
+        event.target.value = ''
+        return
       } else {
-        setTieFile(selectedFile)
+        setTieFile(fileList)
       }
     }
   }
@@ -92,7 +97,9 @@ const SplitOrTiePDF = () => {
 
     setLoading(true)
     const formData = new FormData()
-    formData.append('upload_pdf_for_tie', tieFile)
+    tieFile.forEach(file => {
+      formData.append('files', file)
+    })
 
     try {
       const response = await fetch(domain + '/upload-pdf-tie/', {
