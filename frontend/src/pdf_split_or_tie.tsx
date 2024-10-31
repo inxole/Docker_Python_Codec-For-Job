@@ -80,6 +80,8 @@ const SplitOrTiePDF = () => {
         alert('分割が完了しました。')
       } else if (response.status === 423) {
         alert('他の人が利用中です。')
+      } else if (response.status === 412) {
+        alert('ページ範囲が正しくありません。')
       }
     } catch (error) {
       console.error('Error uploading file:', error)

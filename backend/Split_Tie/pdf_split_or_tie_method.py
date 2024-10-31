@@ -3,6 +3,7 @@
 import os
 import uuid
 from typing import List
+from PyPDF2 import PdfFileReader
 from fastapi import HTTPException, UploadFile, status, APIRouter, Form, File
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -43,6 +44,12 @@ pdfFileStateToggler = PdfFileToggle()
 @router.post("/upload-pdf-split/")
 async def upload_pdf_split(pdf_file: UploadFile = File(...), pages: str = Form(...)):
     """uvicorn uploads post - 分割"""
+    pdf = PdfFileReader(pdf_file)
+    total_pages = pdf.getNumPages()
+
+    if int(pages) > total_pages:
+        raise HTTPException(status_code=status.HTTP_412_PRECONDITION_FAILED,detail="over pages")
+
     if pdfFileStateToggler.not_using():
         pdfFileStateToggler.catch()
 
