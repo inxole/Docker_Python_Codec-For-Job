@@ -59,7 +59,7 @@ const SplitOrTiePDF = () => {
 
     setLoading(true)
     const formData = new FormData()
-    formData.append('upload_pdf_for_split', splitFile)
+    formData.append('pdf_file', splitFile)
     formData.append('pages', pageRange)
 
     try {
@@ -80,8 +80,6 @@ const SplitOrTiePDF = () => {
         alert('分割が完了しました。')
       } else if (response.status === 423) {
         alert('他の人が利用中です。')
-      } else if (response.status === 412) {
-        alert('ページ範囲が正しくありません。')
       }
     } catch (error) {
       console.error('Error uploading file:', error)
@@ -176,7 +174,7 @@ const SplitOrTiePDF = () => {
                 id="pageRange"
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 type="text"
-                placeholder="例：1, 3~10"
+                placeholder="例：1, 3-10"
                 value={pageRange}
                 onChange={handlePageRangeChange}
               />
