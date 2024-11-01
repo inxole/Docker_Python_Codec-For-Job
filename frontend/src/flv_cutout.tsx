@@ -3,26 +3,35 @@ import './App.css'
 import { TailSpin } from 'react-loader-spinner'
 
 const Cutout_Video = () => {
-  const [file, setFile] = useState<File | null>(null)
+  const [hours, setHours] = useState<number>(0)
+  const [minutes, setMinutes] = useState<number>(0)
   const [seconds, setSeconds] = useState<number>(0)
+  const [file, setFile] = useState<File | null>(null)
   const [uuidNumber, setUuidNumber] = useState("")
   const [loading, setLoading] = useState(false)
   const domain = import.meta.env.VITE_BACK_URL
 
+  const handleHoursChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setHours(Number(event.target.value))
+  }
+  const handleMinutesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMinutes(Number(event.target.value))
+  }
+  const handleSecondsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSeconds(Number(event.target.value))
+  }
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const selectedFile = event.target.files[0]
-      if (selectedFile.type !== 'video/x-flv' && selectedFile.type !== 'video/mp4') {
-        alert('FLVまたはMP4ファイルのみ選択してください。')
+      const fileExtension = selectedFile.name.split('.').pop()?.toLowerCase()
+      if (fileExtension !== 'flv') {
+        alert('FLVファイルのみ選択してください。')
         setFile(null)
       } else {
         setFile(selectedFile)
       }
     }
-  }
-
-  const handleSecondsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSeconds(Number(event.target.value))
   }
 
   const uploadFile = async () => {
@@ -32,9 +41,10 @@ const Cutout_Video = () => {
     }
 
     setLoading(true)
+    const totalSeconds = hours * 3600 + minutes * 60 + seconds
     const formData = new FormData()
     formData.append('flv_file', file)
-    formData.append('seconds', seconds.toString())
+    formData.append('seconds', totalSeconds.toString())
 
     try {
       const response = await fetch(domain + '/upload-flv/', {
@@ -96,14 +106,33 @@ const Cutout_Video = () => {
   return (
     <div className="flex flex-col items-center justify-center pt-20 space-y-4" style={{ paddingTop: '200px', position: 'relative' }}>
       <h1 className="text-3xl font-bold underline">動画切り抜き</h1>
-      <input className="border-2 border-gray-300 p-2 rounded-md w-80" type="file" onChange={handleFileChange} accept=".flv, .mp4" />
-      <input
-        type="number"
-        placeholder="秒数を入力"
-        value={seconds}
-        onChange={handleSecondsChange}
-        className="border-2 border-gray-300 p-2 rounded-md w-80"
-      />
+      <input className="border-2 border-gray-300 p-2 rounded-md w-80" type="file" onChange={handleFileChange} accept=".flv" />
+      <div className="flex space-x-2">
+        <input
+          type="number"
+          placeholder="時"
+          value={hours}
+          onChange={handleHoursChange}
+          className="border-2 border-gray-300 p-2 rounded-md w-24"
+        />
+        <p className="flex items-center justify-center h-full">時</p>
+        <input
+          type="number"
+          placeholder="分"
+          value={minutes}
+          onChange={handleMinutesChange}
+          className="border-2 border-gray-300 p-2 rounded-md w-24"
+        />
+        <p className="flex items-center justify-center h-full">分</p>
+        <input
+          type="number"
+          placeholder="秒"
+          value={seconds}
+          onChange={handleSecondsChange}
+          className="border-2 border-gray-300 p-2 rounded-md w-24"
+        />
+        <p className="flex items-center justify-center h-full">秒</p>
+      </div>
 
       <button
         className="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-700 transition duration-200 ease-in-out"
