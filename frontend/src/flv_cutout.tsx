@@ -115,7 +115,7 @@ const Cutout_Video = () => {
           onChange={handleHoursChange}
           className="border-2 border-gray-300 p-2 rounded-md w-24"
         />
-        <p className="flex items-center justify-center h-full">時</p>
+        <p className="flex items-center justify-center">時</p>
         <input
           type="number"
           placeholder="分"
@@ -123,7 +123,7 @@ const Cutout_Video = () => {
           onChange={handleMinutesChange}
           className="border-2 border-gray-300 p-2 rounded-md w-24"
         />
-        <p className="flex items-center justify-center h-full">分</p>
+        <p className="flex items-center justify-center">分</p>
         <input
           type="number"
           placeholder="秒"
@@ -131,7 +131,7 @@ const Cutout_Video = () => {
           onChange={handleSecondsChange}
           className="border-2 border-gray-300 p-2 rounded-md w-24"
         />
-        <p className="flex items-center justify-center h-full">秒</p>
+        <p className="flex items-center justify-center">秒</p>
       </div>
 
       <button
