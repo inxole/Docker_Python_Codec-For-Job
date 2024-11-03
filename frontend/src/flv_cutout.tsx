@@ -113,6 +113,7 @@ const Cutout_Video = () => {
           placeholder="時"
           value={hours}
           onChange={handleHoursChange}
+          min={0}
           className="border-2 border-gray-300 p-2 rounded-md w-24"
         />
         <p className="flex items-center justify-center">時</p>
@@ -121,6 +122,8 @@ const Cutout_Video = () => {
           placeholder="分"
           value={minutes}
           onChange={handleMinutesChange}
+          min={0}
+          max={59}
           className="border-2 border-gray-300 p-2 rounded-md w-24"
         />
         <p className="flex items-center justify-center">分</p>
@@ -129,6 +132,8 @@ const Cutout_Video = () => {
           placeholder="秒"
           value={seconds}
           onChange={handleSecondsChange}
+          min={0}
+          max={59}
           className="border-2 border-gray-300 p-2 rounded-md w-24"
         />
         <p className="flex items-center justify-center">秒</p>
