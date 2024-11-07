@@ -113,6 +113,7 @@ const Cutout_Video = () => {
           placeholder="時"
           value={hours}
           onChange={handleHoursChange}
+          max={100}
           min={0}
           className="border-2 border-gray-300 p-2 rounded-md w-24"
         />
