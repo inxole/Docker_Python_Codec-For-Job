@@ -87,15 +87,15 @@ const Converter_dxf = () => {
 
   return (
     <div className="flex flex-col items-center justify-center pt-20 space-y-4" style={{ paddingTop: '200px' }}>
-      <h1 className="text-3xl font-bold underline">PDF to DXF Converter</h1>
+      <h1 className="text-3xl font-bold underline">PDFをDXFに変換</h1>
       <input className="border-2 border-gray-300 p-2 rounded-md w-80" type="file" onChange={handleFileChange} />
       <div>
-        <label htmlFor="pageRange" className="block text-sm font-medium text-gray-700">ページ範囲を指定:</label>
+        <label htmlFor="pageRange" className="block text-sm font-medium text-gray-700">ページ範囲を指定</label>
         <input
           id="pageRange"
           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           type="text"
-          placeholder="例：1, 3~10"
+          placeholder="例：1, 3-10"
           value={pageRange}
           onChange={handlePageRangeChange}
         />

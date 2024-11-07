@@ -3,7 +3,7 @@
 import asyncio
 import os
 import zipfile
-from pdf_to_svg import pdf_to_svg
+from Trans_dxf.pdf_to_svg import pdf_to_svg
 
 INKSCAPE_DIR = "/usr/bin/inkscape"
 

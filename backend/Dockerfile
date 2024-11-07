@@ -24,8 +24,9 @@ RUN pip install --no-cache-dir \
   aiofiles \
   mysqlclient \ 
   sqlmodel \
-  && rm -rf /root/.cache \
-  python-dotenv
+  python-dotenv \
+  moviepy \
+  && rm -rf /root/.cache
 
 WORKDIR /app/backend
 

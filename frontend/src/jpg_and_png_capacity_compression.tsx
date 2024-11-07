@@ -96,7 +96,7 @@ const Commpress_jpg_and_png = () => {
 
   return (
     <div className="flex flex-col items-center justify-center pt-20 space-y-4" style={{ paddingTop: '200px' }}>
-      <h1 className="text-3xl font-bold underline">JPG and PNG Compressor</h1>
+      <h1 className="text-3xl font-bold underline">JPG & PNG 圧縮</h1>
       <input
         className="border-2 border-gray-300 p-2 rounded-md w-80"
         type="file"

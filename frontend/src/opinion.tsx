@@ -5,7 +5,7 @@ interface Opinion {
   content: string
 }
 
-const App: React.FC = () => {
+const OpinionForm = () => {
   const [opinions, setOpinions] = useState<Opinion[]>([])
   const [content, setContent] = useState('')
   const domain = import.meta.env.VITE_BACK_URL
@@ -85,5 +85,4 @@ const App: React.FC = () => {
 
 }
 
-export default App
-
+export default OpinionForm

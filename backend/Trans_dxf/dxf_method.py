@@ -5,7 +5,7 @@ import uuid
 from fastapi import File, HTTPException, UploadFile, Form, status
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from pdf_to_dxf import extract_and_convert
+from Trans_dxf.pdf_to_dxf import extract_and_convert
 from fastapi import APIRouter
 
 
